@@ -1,0 +1,8 @@
+{
+    "watermeter": "Watermeter Total",
+    "watermeter_daily": "Watermeter Daily",
+    "gasmeter": "Gasmeter Total",
+    "gasmeter_daily": "Gasmeter Daily",
+    "thermal" : "Thermal Total",
+    "distancemeter" : "Waterlevel"
+}

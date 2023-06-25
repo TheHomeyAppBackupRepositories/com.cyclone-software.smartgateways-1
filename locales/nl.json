@@ -1,0 +1,8 @@
+{
+    "watermeter": "Watermeter Totaal",
+    "watermeter_daily": "Watermeter vandaag",
+    "gasmeter": "Gasmeter Totaal",
+    "gasmeter_daily": "Gasmeter vandaag",
+    "thermal" : "WarmteLink Totaal",
+    "distancemeter" : "Waterlevel"
+}

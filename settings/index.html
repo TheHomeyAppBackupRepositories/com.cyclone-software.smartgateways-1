@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+        <!-- The '/homey.js' script must be included in your settings view to work -->
+        <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+       <!-- <link rel="stylesheet" href="css/mustard-ui.min.css">  grrh not working, homey.css is loaded -->
+        <script type="text/javascript" src="settings.js" data-origin="settings"></script>
+    </head>
+    <body>
+
+        <h1 data-i18n="settings.title"></h1>
+
+        <div id="panel-buttons">
+            <button id="panel-button-1" class="button panel-button" onclick="showPanel(1)" data-i18n="settings.Logging">Logging</button>&nbsp;
+            <br><br>
+        </div>
+        <!-- Debug logs panel -->
+      <div id="panel-1" class="panel">
+        <button type="button" class="right" id="button_deletelog" onclick="deleteLogs()" data-i18n="settings.deletelogs">Delete Logs</button>
+        <button type="button" class="right" id="button_getlog" onclick="showLogs()" data-i18n="settings.getlogs">Get Logs</button>
+        <div id="loglines"></div>
+      </div>
+    </body>
+</html>
