@@ -4,5 +4,6 @@ module.exports = Object.freeze({
     SGGasURL: '/gasmeter/api/read?',
     SGDistanceMeterURL: '/distancemeter/api/read?',
     s0:'/s0/api/read?',
-    warmtenet:'/warmtenet/api/read?'
+    warmtenet:'/warmtenet/api/read?',
+    kamstUrl: '/kamst-ir/api/read?'
 });
