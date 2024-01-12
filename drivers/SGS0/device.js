@@ -71,8 +71,9 @@ class SGS0 extends Homey.Device {
     pf(val) {return parseFloat(val)}
 
     async doPolling() {
-        this.log(`Updating device: ${this.getName()}`);
+       // this.log(`Updating device: ${this.getName()}`);
         let url = `http://${this.settings.SGS0Ip}:82${constants.s0}`;
+        this.log(`Updating device: ${this.getName()} at ${url}`);
         fetch(url).then( async res => {
             if (res.ok) {
                 this.setAvailable().catch(this.error);
@@ -110,11 +111,13 @@ class SGS0 extends Homey.Device {
                 await this.setCapabilityValue("wifiState", WiFiState).catch(e => {this.log(`Unable to set wifiState: ${ e.message }`);});
         
              } else
-            {
-              this.setUnavailable(res.statusText);
+             {
+                this.log(`Updating ${url} failed: ${res.statusText}`);
+                this.setUnavailable(res.statusText);
             }
         }).catch(error => {
             this.setUnavailable(error).catch(this.error);
+            this.log(`Updating failed: ${error}`);
         })
     }
 
