@@ -72,9 +72,8 @@ class SGP1 extends Homey.Device {
     pf(val) {return parseFloat(val)}
 
     async doPolling() {
-        //this.log(`Updating device: ${this.getName()}`);
+        this.log(`Updating device: ${this.getName()}`);
         let url = `http://${this.settings.SGP1Ip}:82${constants.SGSGP1URL}`;
-        this.log(`Updating device: ${this.getName()} at ${url}`);
         fetch(url).then( async res => {
             if (res.ok) {
                 this.setAvailable().catch(this.error);
@@ -107,9 +106,7 @@ class SGP1 extends Homey.Device {
                 let meter = p1data.gateway_model;
 
                 if (meter.includes('sweden')){
-                    //powermeter_total=this.pf(p1data.EnergyDelivered); seems not working, not clear what needs to be sent.
-                    powermeter_total = this.pf(p1data.EnergyDeliveredTariff2) + this.pf(p1data.EnergyDeliveredTariff1) - this.pf(p1data.EnergyReturnedTariff1) - this.pf(p1data.EnergyReturnedTariff2);
-
+                    powermeter_total=this.pf(p1data.EnergyDelivered);
                 }   
 
                 let tariff = this.pf(p1data.ElectricityTariff);
@@ -183,12 +180,10 @@ class SGP1 extends Homey.Device {
         
             } else
             {
-                this.log(`Updating ${url} failed: ${res.statusText}`);
-                this.setUnavailable(res.statusText);
+              this.setUnavailable(res.statusText);
             }
         }).catch(error => {
             this.setUnavailable(error).catch(this.error);
-            this.log(`Updating failed: ${error}`);
         })
     }
 

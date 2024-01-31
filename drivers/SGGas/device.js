@@ -93,9 +93,8 @@ class SGGas extends Homey.Device {
     pf(val) {return parseFloat(val)}
 
     async doPolling() {
-//        this.log(`Updating device: ${this.getName()}`);
+        this.log(`Updating device: ${this.getName()}`);
         let url = `http://${this.settings.SGGasIp}:82${constants.SGGasURL}`;
-        this.log(`Updating device: ${this.getName()} at ${url}`);
         fetch(url).then( async res => {
             if (res.ok) {
                 this.setAvailable().catch(this.error);
@@ -160,12 +159,10 @@ class SGGas extends Homey.Device {
 
             } else
             {
-                this.log(`Updating ${url} failed: ${res.statusText}`);
-                this.setUnavailable(res.statusText);
+              this.setUnavailable(res.statusText);
             }
         }).catch(error => {
             this.setUnavailable(error).catch(this.error);
-            this.log(`Updating failed: ${error}`);
         })
     }
 

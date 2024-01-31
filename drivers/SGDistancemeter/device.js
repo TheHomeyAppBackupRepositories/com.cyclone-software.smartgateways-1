@@ -15,23 +15,11 @@ class SGDistancemeter extends Homey.Device {
             // this.realTimeDistance = await this.homey.flow.createToken('sm_distancemeter_realtime_distance_token', {
             //     type: 'number',
             //     title: this.homey.__('distancemeter')
-            //   }).catch(); 
-            
-            // if for some reason the token exist.
-            try {
-                var idToken = await this.homey.flow.getToken('sm_distancemeter_software_update_token');
-                if (idToken!=null)
-                {
-                    this.homey.flow.unregisterToken(idToken);
-                }                    
-            } catch (error) {
-                
-            }
-           
-            // this.distancemeterSoftwareUpdate = await this.homey.flow.createToken('sm_distancemeter_software_update_token', {
-            //     type: 'boolean',
-            //     title: 'Distancemeter Software Update Available'
-            // }).catch();
+            //   }).catch();   
+            this.distancemeterSoftwareUpdate = await this.homey.flow.createToken('sm_distancemeter_software_update_token', {
+                type: 'boolean',
+                title: 'Distancemeter Software Update Available'
+            }).catch();
     
 
             this.waterlevelTrigger = this.homey.flow.getDeviceTriggerCard('waterlevelmeter_change');
@@ -66,15 +54,8 @@ class SGDistancemeter extends Homey.Device {
     pf(val) {return parseFloat(val)}
 
     async doPolling() {
+        this.log(`Updating device: ${this.getName()}`);
         let url = `http://${this.settings.SGDistancemeterIp}:82${constants.SGDistanceMeterURL}`;
-        this.log(`Updating device: ${this.getName()} at ${url}`);
-
-        // if (this.settings.SGDistancemeterIp=='31.187.250.44_1')
-        // {
-        //     url = `http://31.187.250.44:83${constants.SGDistanceMeterURL}`;
-        //     this.log(`Updating device: ${url}`);
-        // }
-
         fetch(url).then( async res => {
             if (res.ok) {
                 this.setAvailable().catch(this.error);
@@ -107,30 +88,27 @@ class SGDistancemeter extends Homey.Device {
                     this.lastSoftwareUpdate=softwareUpdate;
                 }
         
-                if (this.lastReading!==distancemeter_average_distance) {
-                    this.log(`water level trigger: ${distancemeter_average_distance}`);
-                    await this.waterlevelTrigger.trigger(this, {}, {}).catch(this.error);
-                    this.lastReading=distancemeter_average_distance;
+                if (this.lastReading!==this.distancemeter_average_distance) {
+                    this.lastReading=this.distancemeter_average_distance;
+                    this.waterlevelTrigger.trigger(this, {}, {}).catch(this.error);
                 }
         
-               // await this.distancemeterSoftwareUpdate.setValue(softwareUpdate);
+                await this.distancemeterSoftwareUpdate.setValue(softwareUpdate);
                 //await this.realTimeDistance .setValue(distancemeter_average_distance);
 
                 await this.setCapabilityValue("wifiState", WiFiState).catch(e => {this.log(`Unable to set wifiState: ${ e.message }`);});
-                await this.setCapabilityValue("measure_distance_waterlevel", distancemeter_average_distance).catch(e => {this.log(`Unable to set measure_distance_waterlevel: ${ e.message }`);});
-                await this.setCapabilityValue("measure_levelpercentage_waterlevel", levelpercentage).catch(e => {this.log(`Unable to set measure_levelpercentage_waterlevel: ${ e.message }`);});
-                await this.setCapabilityValue("measure_levelabsolute_waterlevel", levelabsolute).catch(e => {this.log(`Unable to set measure_levelabsolute_waterlevel: ${ e.message }`);});
+                await this.setCapabilityValue("my_measure_distance", distancemeter_average_distance).catch(e => {this.log(`Unable to set my_measure_distance: ${ e.message }`);});
+                await this.setCapabilityValue("my_measure_levelpercentage", levelpercentage).catch(e => {this.log(`Unable to set my_measure_levelpercentage: ${ e.message }`);});
+                await this.setCapabilityValue("my_measure_levelabsolute", levelabsolute).catch(e => {this.log(`Unable to set my_measure_levelabsolute: ${ e.message }`);});
  
                // await this.setCapabilityValue("meter_water", this.watermeter).catch(e => {this.log(`Unable to set watermeter: ${ e.message }`);});
 
             } else
             {
-                this.log(`Updating ${url} failed: ${res.statusText}`);
-                this.setUnavailable(res.statusText);
+              this.setUnavailable(res.statusText);
             }
         }).catch(error => {
             this.setUnavailable(error).catch(this.error);
-            this.log(`Updating failed: ${error}`);
         })
     }
 
@@ -146,7 +124,8 @@ class SGDistancemeter extends Homey.Device {
 		console.log(`Re-Initialize ${this.getName()}`);
         clearInterval(this.timerPoll);
         //this.homey.flow.unregisterToken(this.realTimeDistance);
-       // this.homey.flow.unregisterToken(this.distancemeterSoftwareUpdate);
+        this.homey.flow.unregisterToken(this.distancemeterSoftwareUpdate);
+
 
 		setTimeout(() => {
 			this.onInit();
@@ -164,7 +143,7 @@ class SGDistancemeter extends Homey.Device {
         clearInterval(this.timerPoll);
 
        // this.homey.flow.unregisterToken(this.realTimeDistance);
-       // this.homey.flow.unregisterToken(this.distancemeterSoftwareUpdate);
+        this.homey.flow.unregisterToken(this.distancemeterSoftwareUpdate);
 		
         this.log(`SmartGateway Distancemeter deleted as device: ${this.getName()}`);
 	}

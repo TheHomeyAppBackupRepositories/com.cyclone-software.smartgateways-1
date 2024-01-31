@@ -1,8 +1,8 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.cyclone-software.smartgateways",
-  "version": "4.0.4",
-  "compatibility": ">=8.0.0",
+  "version": "4.0.0",
+  "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
     "en": "Smart Gateways"
@@ -30,17 +30,13 @@
       "Smart gateways",
       "Smart meter",
       "Water",
-      "WarmteLink",
-      "watermeter",
-      "kamst-ir"
+      "WarmteLink"
     ],
     "nl": [
       "Smart Gateways",
       "Slimme meter",
       "Water",
-      "WarmteLink",
-      "watermeter",
-      "kamst-ir"
+      "WarmteLink"
     ]
   },
   "category": [
@@ -194,9 +190,9 @@
       "class": "sensor",
       "capabilities": [
         "wifiState",
-        "measure_distance_waterlevel",
-        "measure_levelpercentage_waterlevel",
-        "measure_levelabsolute_waterlevel"
+        "my_measure_distance",
+        "my_measure_levelpercentage",
+        "my_measure_levelabsolute"
       ],
       "energy": {
         "approximation": {
@@ -1371,28 +1367,6 @@
       "insights": true,
       "decimals": 2
     },
-    "measure_distance_waterlevel": {
-      "type": "number",
-      "title": {
-        "en": "Distance",
-        "nl": "Afstand"
-      },
-      "units": {
-        "en": "cm",
-        "nl": "cm"
-      },
-      "desc": {
-        "en": "Distance in centimeters",
-        "nl": "Afstand in centimeters"
-      },
-      "chartType": "stepLine",
-      "decimals": 0,
-      "getable": true,
-      "setable": false,
-      "insights": true,
-      "uiComponent": "sensor",
-      "icon": "./drivers/SGDistancemeter/assets/distance.svg"
-    },
     "measure_gas": {
       "type": "number",
       "title": {
@@ -1433,47 +1407,6 @@
       "insights": true,
       "icon": "./drivers/SGTerm/assets/gas_icon.svg"
     },
-    "measure_levelabsolute_waterlevel": {
-      "type": "number",
-      "title": {
-        "en": "Level Absolute",
-        "nl": "Level Absolute"
-      },
-      "units": {
-        "en": "cm"
-      },
-      "desc": {
-        "en": "Level absolute in cm",
-        "nl": "Level absolute in cm"
-      },
-      "chartType": "stepLine",
-      "decimals": 0,
-      "getable": true,
-      "setable": false,
-      "insights": true,
-      "uiComponent": "sensor",
-      "icon": "./drivers/SGDistancemeter/assets/level.svg"
-    },
-    "measure_levelpercentage_waterlevel": {
-      "type": "number",
-      "title": {
-        "en": "Level Percentage",
-        "nl": "Level Percentage"
-      },
-      "units": {
-        "en": "%"
-      },
-      "desc": {
-        "en": "",
-        "nl": ""
-      },
-      "decimals": 0,
-      "getable": true,
-      "setable": false,
-      "insights": true,
-      "uiComponent": "sensor",
-      "icon": "./drivers/SGDistancemeter/assets/percent.svg"
-    },
     "measure_power": {
       "type": "number",
       "title": {
@@ -1513,6 +1446,63 @@
       "setable": false,
       "insights": true,
       "icon": "./drivers/SGTerm/assets/gas_icon.svg"
+    },
+    "my_measure_distance": {
+      "type": "number",
+      "title": {
+        "en": "Distance",
+        "nl": "Afstand"
+      },
+      "units": {
+        "en": "cm"
+      },
+      "desc": {
+        "en": "Distance in centimeters",
+        "nl": "Afstand in centimeters"
+      },
+      "chartType": "stepLine",
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "icon": "./drivers/SGDistancemeter/assets/distance.svg"
+    },
+    "my_measure_levelabsolute": {
+      "type": "number",
+      "title": {
+        "en": "Level Absolute",
+        "nl": "Level Absolute"
+      },
+      "units": {
+        "en": "cm"
+      },
+      "desc": {
+        "en": "Level absolute in cm",
+        "nl": "Levle absolute in cm"
+      },
+      "chartType": "stepLine",
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "icon": "./drivers/SGDistancemeter/assets/level.svg"
+    },
+    "my_measure_levelpercentage": {
+      "type": "number",
+      "title": {
+        "en": "Level Percentage",
+        "nl": "Level Percentage"
+      },
+      "units": {
+        "en": "%"
+      },
+      "desc": {
+        "en": "",
+        "nl": ""
+      },
+      "chartType": "stepLine",
+      "decimals": 0,
+      "getable": true,
+      "setable": false,
+      "icon": "./drivers/SGDistancemeter/assets/percent.svg"
     },
     "wifiState": {
       "type": "number",

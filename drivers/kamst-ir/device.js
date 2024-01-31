@@ -40,10 +40,9 @@ class kamstir extends Device {
   pf(val) {return parseFloat(val)}
 
   async doPolling() {
-    //this.log(`Updating device: ${this.getName()}`);
+    this.log(`Updating device: ${this.getName()}`);
     // let url = "http://84.27.155.81:82/kamst-ir/api/read"
     let url = `http://${this.settings.KamstIp}:82${constants.kamstUrl}`;
-    this.log(`Updating device: ${this.getName()} at ${url}`);
     fetch(url).then( async res => {
       if (res.ok) {
           this.setAvailable().catch(this.error);
@@ -85,13 +84,11 @@ class kamstir extends Device {
         });
       } else
       {
-        this.log(`Updating ${url} failed: ${res.statusText}`);
         this.setUnavailable(res.statusText);
-    }
-  }).catch(error => {
+      }
+    }).catch(error => {
       this.setUnavailable(error).catch(this.error);
-      this.log(`Updating failed: ${error}`);
-  })   
+    })        
   }
 
   /**

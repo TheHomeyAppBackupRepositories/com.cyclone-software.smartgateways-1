@@ -15,16 +15,6 @@ class SmartGatewayDriver extends Homey.Driver {
 
     async onPairListDevices()  {
    
-        // return [
-        //                 {
-        //                     name: 'Smart Gateways Distance Meter TEST',
-        //                     data: { id: `ConWLM 31.187.250.44_1` },
-        //                     settings: {
-        //                         SGDistancemeterIp: '31.187.250.44_1',
-        //                      }
-        //                 },
-        //             ];
-
         this.log('Start ip range discovery');
 
         const smartmeter = new sg();	
@@ -34,7 +24,7 @@ class SmartGatewayDriver extends Homey.Driver {
                     hosts.forEach((host) => {
 
                             let dev = {
-                                name: 'Smart Gateways Distance Meter',
+                                name: 'Smart Gateways Waterlevel Meter',
                                 data: { id: `ConWLM ${host}` },
                                 settings: {
                                     SGDistancemeterIp: host,
@@ -52,21 +42,7 @@ class SmartGatewayDriver extends Homey.Driver {
                 return devs;
             } 
 
-            {
-
-                this.log('Did not found ip adress, default ip address (127.0.0.1) change in advanced settings...');
-
-                return [
-                    {
-                        name: 'Smart Gateways Distance Meter',
-                        data: { id: `ConWLM 127.0.0.1` },
-                        settings: {
-                            SGDistancemeterIp: '127.0.0.1',
-                            }
-                    },
-                ];
-           }
-
+        return Promise.resolve(devs);
     }
    
 }
