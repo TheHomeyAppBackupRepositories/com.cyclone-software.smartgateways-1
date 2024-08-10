@@ -28,6 +28,12 @@ class SGS0 extends Homey.Device {
             this.lastSoftwareUpdate = false;
     
             this.settings = this.getSettings();
+
+            if (this.hasCapability('measure_power_realtime') === false) {
+                // You need to check if migration is needed
+                // do not call addCapability on every init!
+                await this.addCapability('measure_power_realtime');
+              }
             
             // this.ThermTotalToken = await this.homey.flow.createToken('sm_thermal_token', {
             //     type: 'number',
@@ -71,14 +77,16 @@ class SGS0 extends Homey.Device {
     pf(val) {return parseFloat(val)}
 
     async doPolling() {
-        this.log(`Updating device: ${this.getName()}`);
+       // this.log(`Updating device: ${this.getName()}`);
         let url = `http://${this.settings.SGS0Ip}:82${constants.s0}`;
+        this.log(`Updating device: ${this.getName()} at ${url}`);
         fetch(url).then( async res => {
             if (res.ok) {
                 this.setAvailable().catch(this.error);
                 const s0data = await res.json();
 
                 let verbruik = parseFloat(s0data.meter_value_kw);
+                let current = parseFloat(s0data.powerdelivered_realtime);
              
                 let WiFiState = this.pf(s0data.wifi_rssi);
         
@@ -104,17 +112,21 @@ class SGS0 extends Homey.Device {
                 this.setCapabilityValue("meter_power", verbruik).catch(e => {this.log(`Unable to set meter_power: ${ e.message }`);})
                 this.setCapabilityValue("measure_power", verbruik).catch(e => {this.log(`Unable to set measure_power: ${ e.message }`);})
         
+                this.setCapabilityValue("measure_power_realtime", current).catch(e => {this.log(`Unable to set measure_power_realtime: ${ e.message }`);})
+        
                 
                 await this.s0SoftwareUpdate.setValue(softwareUpdate);
 
                 await this.setCapabilityValue("wifiState", WiFiState).catch(e => {this.log(`Unable to set wifiState: ${ e.message }`);});
         
              } else
-            {
-              this.setUnavailable(res.statusText);
+             {
+                this.log(`Updating ${url} failed: ${res.statusText}`);
+                this.setUnavailable(res.statusText);
             }
         }).catch(error => {
             this.setUnavailable(error).catch(this.error);
+            this.log(`Updating failed: ${error}`);
         })
     }
 

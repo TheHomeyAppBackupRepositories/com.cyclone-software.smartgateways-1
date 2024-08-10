@@ -72,8 +72,9 @@ class SGP1 extends Homey.Device {
     pf(val) {return parseFloat(val)}
 
     async doPolling() {
-        this.log(`Updating device: ${this.getName()}`);
+        //this.log(`Updating device: ${this.getName()}`);
         let url = `http://${this.settings.SGP1Ip}:82${constants.SGSGP1URL}`;
+        this.log(`Updating device: ${this.getName()} at ${url}`);
         fetch(url).then( async res => {
             if (res.ok) {
                 this.setAvailable().catch(this.error);
@@ -92,9 +93,11 @@ class SGP1 extends Homey.Device {
                
                 let softwareUpdate = this.parseBool(p1data.firmware_update_available);
 
-                let factor = this.settings.watt_hour_p1 ? 1000 : 1;
+                let factorTot = this.settings.watt_hour_p1 ? 1000 : 1;
+                let factorSaldi = this.settings.saldi_watt_hour_p1 ? 1000 : 1;
 
-                this.log(`Factor (Wh): ${factor}`);
+                this.log(`Factor Tot (Wh): ${factorTot}`);
+                this.log(`Factor Saldi (Wh): ${factorSaldi}`);
 
                 let powerTotal = this.pf(p1data.PowerDelivered_total); // kwh
                 let powerTotalReturned = this.pf(p1data.PowerReturned_total); // kwh
@@ -106,7 +109,9 @@ class SGP1 extends Homey.Device {
                 let meter = p1data.gateway_model;
 
                 if (meter.includes('sweden')){
-                    powermeter_total=this.pf(p1data.EnergyDelivered);
+                    //powermeter_total=this.pf(p1data.EnergyDelivered); seems not working, not clear what needs to be sent.
+                    powermeter_total = this.pf(p1data.EnergyDeliveredTariff2) + this.pf(p1data.EnergyDeliveredTariff1) - this.pf(p1data.EnergyReturnedTariff1) - this.pf(p1data.EnergyReturnedTariff2);
+
                 }   
 
                 let tariff = this.pf(p1data.ElectricityTariff);
@@ -134,12 +139,12 @@ class SGP1 extends Homey.Device {
 
                 await Promise.all([
                    // this.setCapabilityValue("meter_power.saldo", powerTotal - powerTotalReturned).catch(e => {this.log(`Unable to set meter_power.peak: ${ e.message }`);}),
-                    this.setCapabilityValue("meter_power.saldo", saldo * factor).catch(e => {this.log(`Unable to set meter_power.saldo: ${ e.message }`);}),
+                    this.setCapabilityValue("meter_power.saldo", saldo * factorSaldi).catch(e => {this.log(`Unable to set meter_power.saldo: ${ e.message }`);}),
 
                     // this.setCapabilityValue("meter_power.net", net * factor).catch(e => {this.log(`Unable to set meter_power.net: ${ e.message }`);}),
 
-                    this.setCapabilityValue("measure_power", powerTotal * factor).catch(e => {this.log(`Unable to set meter_power.peak: ${ e.message }`);}),
-                    this.setCapabilityValue("measure_power.return",powerTotalReturned * factor).catch(e => {this.log(`Unable to set meter_power.offPeak: ${ e.message }`);}),
+                    this.setCapabilityValue("measure_power", powerTotal * factorTot).catch(e => {this.log(`Unable to set meter_power.peak: ${ e.message }`);}),
+                    this.setCapabilityValue("measure_power.return",powerTotalReturned * factorTot).catch(e => {this.log(`Unable to set meter_power.offPeak: ${ e.message }`);}),
 
                     this.setCapabilityValue("wifiState_p1", this.pf(p1data.wifi_rssi)).catch(e => {this.log(`Unable to set wifiState: ${ e.message }`);}),
                     this.setCapabilityValue("meter_power", powermeter_total).catch(e => {this.log(`Unable to set meter_power: ${ e.message }`);}),
@@ -180,10 +185,12 @@ class SGP1 extends Homey.Device {
         
             } else
             {
-              this.setUnavailable(res.statusText);
+                this.log(`Updating ${url} failed: ${res.statusText}`);
+                this.setUnavailable(res.statusText);
             }
         }).catch(error => {
             this.setUnavailable(error).catch(this.error);
+            this.log(`Updating failed: ${error}`);
         })
     }
 
